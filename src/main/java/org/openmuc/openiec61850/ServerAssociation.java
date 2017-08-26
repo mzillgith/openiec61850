@@ -16,8 +16,10 @@
  */
 package org.openmuc.openiec61850;
 
+import java.io.ByteArrayInputStream;
 import java.io.EOFException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.SocketTimeoutException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
@@ -422,7 +424,14 @@ final class ServerAssociation {
             mmsRequestPdu = new MMSpdu();
 
             try {
-                mmsRequestPdu.decode(new ByteBufferInputStream(pduBuffer), null);
+                
+                InputStream iStream = new ByteArrayInputStream(acseAssociation.getUserData().
+                        getFullyEncodedData().
+                        getPDVList().get(0).
+                        getPresentationDataValues().
+                        getSingleASN1Type().value);
+                
+                mmsRequestPdu.decode(iStream, null);
             } catch (IOException e) {
                 logger.warn("IOException decoding received MMS request PDU.", e);
                 continue;

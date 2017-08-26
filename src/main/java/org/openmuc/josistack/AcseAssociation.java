@@ -70,6 +70,8 @@ public final class AcseAssociation {
     private boolean connected = false;
     private TConnection tConnection;
     private ByteBuffer associateResponseAPDU = null;
+    private UserData user_data = null;
+    
     private final RespondingPresentationSelector pSelLocalBerOctetString;
 
     private static final PresentationContextDefinitionList context_list = new PresentationContextDefinitionList(
@@ -638,10 +640,6 @@ public final class AcseAssociation {
         ssduList.add(berOStream.buffer);
         ssduOffsets.add(berOStream.index + 1);
         ssduLengths.add(berOStream.buffer.length - (berOStream.index + 1));
-
-        ssduList.add(payload.array());
-        ssduOffsets.add(payload.arrayOffset() + payload.position());
-        ssduLengths.add(payload.limit() - payload.position());
     }
 
     private void encodeSessionLayer(List<byte[]> ssduList, List<Integer> ssduOffsets, List<Integer> ssduLengths)
@@ -691,13 +689,19 @@ public final class AcseAssociation {
 
     private void decodePresentationLayer(ByteBuffer pduBuffer) throws DecodingException {
         // decode PPDU header
-        UserData user_data = new UserData();
+        user_data = new UserData();
 
         try {
             user_data.decode(new ByteBufferInputStream(pduBuffer), null);
         } catch (IOException e) {
+            user_data = null;
             throw new DecodingException("error decoding PPDU header", e);
         }
+    }
+    
+    public UserData getUserData()
+    {
+        return user_data;
     }
 
     private void decodeSessionLayer(ByteBuffer pduBuffer) throws EOFException, DecodingException {

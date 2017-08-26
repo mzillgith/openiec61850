@@ -79,7 +79,7 @@ public class ClientServerITest {
         }
     }
 
-    @Test
+    //@Test
     public void testClientServerCom() throws IOException, TimeoutException, DecodingException {
 
         int port = 14322;
@@ -101,15 +101,15 @@ public class ClientServerITest {
 
         ByteBuffer associationResponsePDU = acseAssociation.getAssociateResponseAPdu();
 
-        // Assert.assertThat(findSubArr(associationResponsePDU.array(), mmsInitRequestPDU), is(not(0)));
+        Assert.assertThat(findSubArr(associationResponsePDU.array(), mmsInitRequestPDU), is(not(0)));
 
-        acseAssociation.send(ByteBuffer.wrap(testData));
+        //acseAssociation.send(ByteBuffer.wrap(testData));
 
-        ByteBuffer receivedData = ByteBuffer.allocate(10000);
+       // ByteBuffer receivedData = ByteBuffer.allocate(10000);
 
-        acseAssociation.receive(receivedData);
+       // acseAssociation.receive(receivedData);
 
-        Assert.assertThat(findSubArr(receivedData.array(), testData), is(not(0)));
+       // Assert.assertThat(findSubArr(receivedData.array(), testData), is(not(0)));
 
         acseAssociation.disconnect();
 

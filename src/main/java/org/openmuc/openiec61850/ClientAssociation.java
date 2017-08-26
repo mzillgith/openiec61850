@@ -16,7 +16,9 @@
  */
 package org.openmuc.openiec61850;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.InetAddress;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
@@ -141,7 +143,13 @@ public final class ClientAssociation {
 
                     MMSpdu decodedResponsePdu = new MMSpdu();
                     try {
-                        decodedResponsePdu.decode(new ByteBufferInputStream(pduBuffer), null);
+                        InputStream iStream = new ByteArrayInputStream(acseAssociation.getUserData().
+                                        getFullyEncodedData().
+                                        getPDVList().get(0).
+                                        getPresentationDataValues().
+                                        getSingleASN1Type().value);
+                        
+                        decodedResponsePdu.decode(iStream, null);
                     } catch (IOException e) {
                         // Error decoding the received MMS PDU
                         continue;
